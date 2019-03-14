@@ -1,6 +1,7 @@
 var express = require("express");
 var app = express();
 var bodyParser = require("body-parser");
+const {ObjectID} = require("mongodb");
 
 app.use(bodyParser.json());
 
@@ -22,11 +23,39 @@ app.post("/todos", (req, res) => {
 });
 
 
+app.get("/todos", (req, res) => {
+	Todo.find().then((todos) => {
+		res.send({todos})//bolje je slati ovaj niz unutar objekta, jer bi tako mogli da saljemo jos neke stvari u buducnosti, a ako ga ostavimo kao niz(res.send(todos)) => nista necemo moci da saljemo
+	}, (err) => {
+		res.status(400).send(err);
+	})
+});
+
+
+app.get("/todos/:id", (req, res) => {
+    var id = req.params.id;
+
+    if(!ObjectID.isValid(id)) {
+      res.status(404).send();
+    } else {
+      Todo.findById(id).then((todo) => {
+            if(!todo) {
+                  res.status(404).send();
+            } else {
+                  res.send({todo});
+            }
+      }, () => {
+            res.status(400).send();
+      });
+    }
+});
 
 app.listen(3000, () => {
 	console.log("Server je pokrenut!");
 });
 
+
+module.exports = {app};
 
 
 
