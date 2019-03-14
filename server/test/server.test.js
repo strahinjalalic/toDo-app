@@ -10,7 +10,9 @@ var todos = [{
 	text: "First test todo"
 }, {
 	_id: new ObjectID(),
-	text: "Second test todo"
+	text: "Second test todo",
+	completed: true,
+	completedAt: 333
 }];
 
 beforeEach((done) => { //dole u kodu pretpostavljamo da je baza prazna, ovim kodom je zapravo praznimo => metod ce se pokretati pre svakog testiranja
@@ -109,5 +111,27 @@ describe("DELETE /todos/:id", () => {
        	 	done();
        	 });
        });
+	});
+});
+
+
+describe("PATCH /todos/:id", () => {
+	it("should update todo", (done) => {
+		var hexId = todos[0]._id.toHexString();
+        var text = "Updated Text in first item";
+        
+
+        request(app)
+         .patch(`/todos/${hexId}`)
+         .send({
+         	completed: true,
+         	text
+         })
+         .expect(200)
+         .expect((res) => {
+         	expect(res.body.todo.text).toBe(text);
+         	expect(res.body.todo.completed).toBe(true);
+         	expect(res.body.todo.completedAt).toBeA("number");
+         }).end(done);
 	});
 });
