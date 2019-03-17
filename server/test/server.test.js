@@ -119,7 +119,6 @@ describe("PATCH /todos/:id", () => {
 	it("should update todo", (done) => {
 		var hexId = todos[0]._id.toHexString();
         var text = "Updated Text in first item";
-        
 
         request(app)
          .patch(`/todos/${hexId}`)
