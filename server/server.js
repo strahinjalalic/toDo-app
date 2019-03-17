@@ -110,6 +110,25 @@ app.delete("/todos/:id", (req, res) => {
   });
 });
 
+app.post("/users", (req, res) => {
+  var body = _.pick(req.body, ["email", "password"]);
+
+  var user = new User({
+    email: body.email,
+    password: body.password
+  });
+
+  user.save().then(() => {
+    return user.generateAuthToken();//return da bi se chainovao Promise
+  }).then((token) => {
+    res.header('x-auth', token).send(user); //x-auth je custom header koji sami pravimo, headeri se odnose na http zahteve
+  }).catch((e) => {
+    res.status(400).send(e);
+  });
+});
+
+
+
 app.listen(port, () => {
 	console.log(`Server je pokrenut na portu ${port}`);
 });

@@ -5,16 +5,19 @@
   "main": "index.js",
   "scripts": {
     "start": "node server/server.js",
-    "test": "process.env.NODE_ENV || SET /"NODE_ENV=test/" && mocha server/**/*.test.js"
+    "test": "process.env.NODE_ENV || SET NODE_ENV=test && mocha server/**/*.test.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.18.3",
+    "crypto-js": "^3.1.9-1",
     "express": "^4.16.4",
+    "jsonwebtoken": "^8.5.0",
     "lodash": "^4.17.11",
     "mongodb": "^3.1.13",
-    "mongoose": "^5.4.18"
+    "mongoose": "^5.4.18",
+    "validator": "^10.11.0"
   },
   "devDependencies": {
     "expect": "^1.20.2",
