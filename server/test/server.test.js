@@ -4,22 +4,10 @@ const {ObjectID} = require("mongodb");
 
 const {app} = require("./../server");
 const {Todo} = require("./../models/todo");
+const {todos, populateTodos, users, populateUsers} = require("./seed/seed");
 
-var todos = [{
-	_id: new ObjectID(),
-	text: "First test todo"
-}, {
-	_id: new ObjectID(),
-	text: "Second test todo",
-	completed: true,
-	completedAt: 333
-}];
-
-beforeEach((done) => { //dole u kodu pretpostavljamo da je baza prazna, ovim kodom je zapravo praznimo => metod ce se pokretati pre svakog testiranja
-	Todo.remove({}).then(() => {
-		return Todo.insertMany(todos);
-	}).then(() => done()); 
-});
+beforeEach(populateUsers);
+beforeEach(populateTodos);
 
 
 describe("POST /todos", () => {
