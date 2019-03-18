@@ -22,6 +22,7 @@ app.use(bodyParser.json());
 var {mongoose} = require("./db/mongoose");
 var {Todo} = require("./models/todo");
 var {User} = require("./models/user");
+var {authenticate} = require("./middleware/authenticate");
 
 var port = process.env.PORT;
 
@@ -121,10 +122,15 @@ app.post("/users", (req, res) => {
   user.save().then(() => {
     return user.generateAuthToken();//return da bi se chainovao Promise
   }).then((token) => {
-    res.header('x-auth', token).send(user); //x-auth je custom header koji sami pravimo, headeri se odnose na http zahteve
+    res.header("x-auth", token).send(user); //x-auth je custom header koji sami pravimo, headeri se odnose na http zahteve
   }).catch((e) => {
     res.status(400).send(e);
   });
+});
+
+
+app.get("/users/me", authenticate,  (req, res) => {
+  res.send(req.user);
 });
 
 

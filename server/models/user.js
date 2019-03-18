@@ -34,7 +34,7 @@ var userSchema = new mongoose.Schema({
 });
 
 
-userSchema.methods.toJSON = function() {
+userSchema.methods.toJSON = function() {//methods objekat sve funkcije pretvara u instance metode, statics objekat sve metode pretvara u modalne metode
     var user = this;
     var userObject = user.toObject(); //promenljivu prebacujemo u objekat da bi koristili pick() metod
 
@@ -43,7 +43,7 @@ userSchema.methods.toJSON = function() {
 
 
 userSchema.methods.generateAuthToken = function() {
-	var user = this;
+	var user = this;//userSchema je parent objekat
 	var access = "auth";
 	var token = jwt.sign({_id: user._id.toHexString(), access}, "123abc").toString();
 
@@ -54,6 +54,24 @@ userSchema.methods.generateAuthToken = function() {
 	});
 };
 
+userSchema.statics.findByToken = function(token) {
+  var User = this;
+  var decoded; 
+
+  try {
+  	decoded = jwt.verify(token, '123abc');
+  } catch(e) {
+    // return new Promise((resolve, reject) => {
+    // 	reject(); }
+    return Promise.reject();
+  }
+
+  return User.findOne({
+  	_id: decoded._id,
+  	'tokens.token': token,
+  	'tokens.access': 'auth'
+  });
+};
 
 var User = mongoose.model("User", userSchema);
 
