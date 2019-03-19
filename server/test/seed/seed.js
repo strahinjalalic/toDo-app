@@ -7,7 +7,7 @@ var userOneId = new ObjectID();
 var userTwoId = new ObjectID();
 
 
-const users = [{
+var users = [{
 	_id: userOneId,
 	email: "strahinjalalic@yahoo.com",
 	password: "userOnePass",
