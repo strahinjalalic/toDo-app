@@ -67,6 +67,7 @@ app.get("/todos/:id", (req, res) => {
     }
 });
 
+
 app.patch("/todos/:id", (req, res) => {
   var id = req.params.id;
   var body = _.pick(req.body, ["text", "completed"]); //pick() je metod koji nam omogucava da odredimo stvari koje user moze da update-uje => van ova dva property-ja ne moze nista => prvi argument je req.body, jer se izvlace info iz njega, a drugi argument je niz sa stavkama koje zelimo da omogucimo useru da update-uje
@@ -93,6 +94,7 @@ app.patch("/todos/:id", (req, res) => {
   }); 
 });
 
+
 app.delete("/todos/:id", (req, res) => {
   var id = req.params.id;
 
@@ -110,6 +112,7 @@ app.delete("/todos/:id", (req, res) => {
     res.status(400).send();
   });
 });
+
 
 app.post("/users", (req, res) => {
   var body = _.pick(req.body, ["email", "password"]);
@@ -134,6 +137,17 @@ app.get("/users/me", authenticate,  (req, res) => {
 });
 
 
+app.post("/users/login", (req, res) => {
+  var body = _.pick(req.body, ["email", "password"]);
+
+  User.findByCredentials(body.email, body.password).then((user) => {
+      return user.generateAuthToken().then((token) => {//koristimo ovu funkciju kako bi mogli da uz token pristupimo /users/me stranici
+        res.header("x-auth", token).send(user);
+      })
+  }).catch((e) => {
+    res.status(400).send();
+  });
+});
 
 app.listen(port, () => {
 	console.log(`Server je pokrenut na portu ${port}`);

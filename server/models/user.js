@@ -75,6 +75,26 @@ userSchema.statics.findByToken = function(token) {
 };
 
 
+userSchema.statics.findByCredentials = function(email, password) {
+	var User = this;
+
+
+	return User.findOne({email}).then((user) => {
+		if(!user) {
+			return Promise.reject();
+		}
+
+		return new Promise((resolve, reject) => {//bcrypt metodi idu sa callbackovima, zato moramo da napravimo novi Promise
+			bcrypt.compare(password, user.password, (err, res) => {
+				if(res){
+				 resolve(user);
+				} 
+			     reject();
+			});
+		});
+	});
+};
+
 userSchema.pre("save", function(next) {//mongoose middleware => ovakvi metodi nam dopustaju da odradimo nesto pre ili nakon nekog eventa => u ovom slucaju pisemo kod koji ce se izvrsiti pre 'save'eventa
 	var user = this;
 
