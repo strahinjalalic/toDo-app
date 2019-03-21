@@ -27,10 +27,11 @@ var {authenticate} = require("./middleware/authenticate");
 var port = process.env.PORT;
 
 
-app.post("/todos", (req, res) => {
+app.post("/todos", authenticate, (req, res) => {
       // console.log(req.body); //salje se preko postmana
       var todo = new Todo({
-      	text: req.body.text//odnosi se na zahtev koji saljemo preko postmana kada sami pisemo "text":"vrednost"
+      	text: req.body.text,//odnosi se na zahtev koji saljemo preko postmana kada sami pisemo "text":"vrednost"
+        _creator: req.user._id
       });
       todo.save().then((doc) => {
       	res.send(doc);
@@ -40,8 +41,10 @@ app.post("/todos", (req, res) => {
 });
 
 
-app.get("/todos", (req, res) => {
-	Todo.find().then((todos) => {
+app.get("/todos", authenticate, (req, res) => {
+	Todo.find({
+    _creator: req.user._id
+  }).then((todos) => {
 		res.send({todos})//bolje je slati ovaj niz unutar objekta, jer bi tako mogli da saljemo jos neke stvari u buducnosti, a ako ga ostavimo kao niz(res.send(todos)) => nista necemo moci da saljemo
 	}, (err) => {
 		res.status(400).send(err);
