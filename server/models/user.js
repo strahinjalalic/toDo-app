@@ -46,7 +46,7 @@ userSchema.methods.toJSON = function() {//methods objekat sve funkcije pretvara 
 userSchema.methods.generateAuthToken = function() {
 	var user = this;//userSchema je parent objekat
 	var access = "auth";
-	var token = jwt.sign({_id: user._id.toHexString(), access}, "123abc").toString();
+	var token = jwt.sign({_id: user._id.toHexString(), access}, process.env.JWT_SECRET).toString();
 
 	user.tokens = user.tokens.concat([{access, token}]);//moze i user.tokens.push({access, token}) ali je ovo sigurniji metod
 
@@ -71,7 +71,7 @@ userSchema.statics.findByToken = function(token) {
   var decoded; 
 
   try {
-  	decoded = jwt.verify(token, '123abc');
+  	decoded = jwt.verify(token, process.env.JWT_SECRET);
   } catch(e) {
     // return new Promise((resolve, reject) => {
     // 	reject(); }

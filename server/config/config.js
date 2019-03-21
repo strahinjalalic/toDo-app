@@ -1,0 +1,23 @@
+var env = process.env.NODE_ENV || "development";
+
+if(env === "development" || env === "test") {
+	var config = require("./config.json");
+	var envConfig = config[env];//mora [] kada se uzima preko promenljive
+
+
+	Object.keys(envConfig).forEach((key) => {
+		process.env[key] = envConfig[key];
+	});
+}
+
+
+
+console.log("env****", env);
+
+// if(env === "development") {
+//   process.env.PORT = 3000;
+//   process.env.MONGODB_URI = "mongodb://localhost:27017/TodosApp";
+// } else if(env === "test") {
+//   process.env.PORT = 3000;
+//   process.env.MONGODB_URI = "mongodb://localhost:27017/TodosAppTest"
+// }
